@@ -1,7 +1,12 @@
 package com.ids.rescom.annoucement;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,20 +21,28 @@ public class AnnoucementTest {
 
 	@Autowired AnnouncementRepository announceRepo;
 	
+	@Test
 	public void addAnnouncement() {
 		for(int i=1; i<=5; i++) {
 			Announcement announcement = new Announcement();
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+			Date dt = new Date();
 			
 			announcement.setTitle("Title " + i);
-			announcement.setDescription("Description " + i);
+			announcement.setShortDesc("ShortDesc " + i);
+			announcement.setLongDesc("LongDesc " + i);
 			announcement.setType(0);
 			announcement.setSequence(i);
-			announcement.setStartDate(new Date());
-			announcement.setEndDate(new Date());
-			announcement.setCreateDate(new Date());
-			announcement.setLastUpdate(new Date());
+			announcement.setStartDate(dateFormat.format(dt));
+			announcement.setStartTime(timeFormat.format(dt));
+			announcement.setEndDate(dateFormat.format(dt));
+			announcement.setEndTime(timeFormat.format(dt));
+			announcement.setCreateDate(dt);
+			announcement.setLastUpdate(dt);
 			announcement.setHref(null);
 			announcement.setImportantLevel(0);
+			announcement.setStatus(0);
 			
 			announceRepo.save(announcement);
 		}

@@ -34,10 +34,11 @@ public class AccountController {
 	public ResponseEntity<String> updateAccount(
 			@PathVariable Long id,
 			@RequestParam String name, 
-			@RequestParam String email
+			@RequestParam String email,
+			@RequestParam String hpContact
 			) {
 		
-		log.info("id:{}, name:{} , email: {}", id, name, email);
+		log.info("id:{}, name:{} , email: {}, hpContact : {}", id, name, email, hpContact);
 		
 		try {
 			Account account = accountRepo.findById(id);
@@ -46,6 +47,7 @@ public class AccountController {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ACCOUNT_NOT_FOUND");
 			} else {
 				account.getProfile().setName(name);
+				account.getProfile().setHpContact(hpContact);
 				account.setEmail(email);
 				
 				accountRepo.save(account);

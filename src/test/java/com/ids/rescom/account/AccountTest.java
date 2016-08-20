@@ -28,6 +28,7 @@ public class AccountTest {
 			Profile profile = new Profile();
 			
 			profile.setName("User" + i);
+			profile.setHpContact("0123456789" + i);
 			profile.setDeviceId("xxx");
 			
 			Unit unit = new Unit();
