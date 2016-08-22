@@ -96,5 +96,14 @@
 		</plugins>
 	</build>
 
-
+	<repositories>
+    <repository>
+        <id>ids-rescom-dao-mvn-repo</id>
+        <url>https://raw.github.com/valkyrie1988/ids-rescom-dao/mvn-repo/</url>
+        <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+        </snapshots>
+    </repository>
+</repositories>
 </project>
