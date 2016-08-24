@@ -37,7 +37,7 @@ public class AnnoucementTest {
 			announcement.setLastUpdate(dt);
 			announcement.setHref(null);
 			announcement.setImportantLevel(0);
-			announcement.setStatus(0);
+			announcement.setStatus(1);
 			
 			announceRepo.save(announcement);
 		}

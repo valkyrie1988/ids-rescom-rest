@@ -64,7 +64,7 @@ public class AppointmentController {
 				app.setDescription(description);
 				app.setCreatedDt(dt);
 				app.setCreatedBy(id);
-				app.setStatus(0);
+				app.setStatus(1);
 				
 				appRepo.save(app);
 				return ResponseEntity.ok("success");
@@ -84,7 +84,7 @@ public class AppointmentController {
 		return appointmentObj;
 	}
 	
-	@RequestMapping(value = "/appointment/update/{id}/{appId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/appointment/update/{id}/{appointmentId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> updateAppointment(
 			@PathVariable Long id, 
 			@PathVariable Long appId,
@@ -122,7 +122,7 @@ public class AppointmentController {
 		}
 	}
 	
-	@RequestMapping(value = "/appointment/cancel/{id}/{appId}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/appointment/cancel/{id}/{appointmentId}", method = RequestMethod.PUT)
 	public ResponseEntity<String> cancelAppointment(@PathVariable Long id, @PathVariable Long appId) {
 		log.info("[APPOINTMENT_CANCEL] - id:{} , appointmentId:{}", id, appId);
 		try {

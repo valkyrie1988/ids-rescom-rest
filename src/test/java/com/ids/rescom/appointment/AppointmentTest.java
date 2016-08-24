@@ -35,7 +35,7 @@ public class AppointmentTest {
 			app.setDescription("description");
 			app.setCreatedDt(dt);
 			app.setCreatedBy(i);
-			app.setStatus(0);
+			app.setStatus(1);
 			
 			appRepo.save(app);
 		}
