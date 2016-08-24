@@ -22,7 +22,7 @@ public class AnnouncementController {
 	
 	@RequestMapping(value = "/announcements", method = RequestMethod.GET)
     public List<Announcement> getAnnouncements() {
-		List<Announcement> announcements = annoucementRepo.findAllByOrderBySequence();
+		List<Announcement> announcements = annoucementRepo.findByStatusOrderBySequence(1);
 	
 		log.info("getAnnouncements returns {}", announcements);
 		return announcements;

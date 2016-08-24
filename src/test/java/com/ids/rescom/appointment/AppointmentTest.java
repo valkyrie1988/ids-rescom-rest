@@ -20,22 +20,24 @@ public class AppointmentTest {
 	
 	@Test
 	public void addAppointment() {
-		Visitor visitor = new Visitor();
-		Appointment app = new Appointment();
-		Date dt = new Date();
-		
-		visitor.setName("xxx");
-		visitor.setIcNo("881001235067");
-		visitor.setCarPlate("JQR 9394");
-		
-		app.setVisitor(visitor);
-		app.setVisitDt(dt);
-		app.setType(0);
-		app.setDescription("description");
-		app.setCreatedDt(dt);
-		app.setCreatedBy(1);
-		app.setStatus(0);
-		
-		appRepo.save(app);
+		for(int i=1; i<=5; i++) {
+			Visitor visitor = new Visitor();
+			Appointment app = new Appointment();
+			Date dt = new Date();
+			
+			visitor.setName("xxx");
+			visitor.setIcNo("881001235067");
+			visitor.setCarPlate("JQR 9394");
+			
+			app.setVisitor(visitor);
+			app.setVisitDt(dt);
+			app.setType(0);
+			app.setDescription("description");
+			app.setCreatedDt(dt);
+			app.setCreatedBy(i);
+			app.setStatus(1);
+			
+			appRepo.save(app);
+		}
 	}
 }

@@ -1,6 +1,7 @@
 package com.ids.rescom.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class AppointmentController {
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	@RequestMapping(value = "/appointment/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/appointment/create/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<String> createAppointment(
 			@PathVariable Long id,
 			@RequestParam String name,
@@ -41,26 +42,21 @@ public class AppointmentController {
 			@RequestParam String description
 			) {
 		
-		log.info("id:{}, name:{} , icNo: {}, carPlate : {}, visitDt : {}, description : {} ", id, name, icNo, carPlate, visitDt, description);
+		log.info("[APPOINTMENT_CREATE] - id:{}, name:{} , icNo: {}, carPlate : {}, visitDt : {}, description : {} ", id, name, icNo, carPlate, visitDt, description);
 		
 		try {
-			log.info("123321");
 			Account account = accountRepo.findById(id);
-			log.info("234432");
 			Visitor visitor = new Visitor();
 			Appointment app = new Appointment();
 			Date dt = new Date();
 			
 			if(account == null){
-				log.info("ACCOUNT_NOT_FOUND");
+				log.error("ACCOUNT_NOT_FOUND");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ACCOUNT_NOT_FOUND");
 			} else {
-				log.info("ACCOUNT_FOUND");
 				visitor.setName(name);
 				visitor.setIcNo(icNo);
 				visitor.setCarPlate(carPlate);
-				
-				log.info("name:{}, icNo:{}, carPlate:{}", name, icNo, carPlate);
 				
 				app.setVisitor(visitor);
 				app.setVisitDt(visitDt);
@@ -68,16 +64,89 @@ public class AppointmentController {
 				app.setDescription(description);
 				app.setCreatedDt(dt);
 				app.setCreatedBy(id);
-				app.setStatus(0);
-				
-				log.info("visitDt:{}, type:{}, desc:{}, createdDt:{}, createdBy:{}", visitDt, type, description, dt, id);
+				app.setStatus(1);
 				
 				appRepo.save(app);
 				return ResponseEntity.ok("success");
 			}
 		} catch (Exception e) {
 			log.error("Failed to create schedule for appointment.",e);
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("UNABLE_TO_UPDATE");
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("APPOINTMENT_CREATE_FAILED");
+		}
+	}
+	
+	@RequestMapping(value = "/appointment/{id}", method = RequestMethod.GET)
+	public List<Appointment> getAppointmentList(@PathVariable Long id) {
+		log.info("[APPOINTMENT_LIST] - id:{}", id);
+		List<Appointment> appointmentObj = appRepo.findByCreatedByAndStatusOrderByVisitDtDesc(id, 0);
+		
+		log.info("getAccountInfoById returns {}", appointmentObj);
+		return appointmentObj;
+	}
+	
+	@RequestMapping(value = "/appointment/update/{id}/{appointmentId}", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateAppointment(
+			@PathVariable Long id, 
+			@PathVariable Long appId,
+			@RequestParam Date visitDt,
+			@RequestParam String name,
+			@RequestParam String icNo,
+			@RequestParam String carPlate) {
+		log.info("[APPOINTMENT_UPDATE] - id:{} , appointmentId:{} , visitDt:{} , name:{} , icNo:{} , carPlate:{}", id, appId, visitDt, name, icNo, carPlate);
+		try {
+			Account account = accountRepo.findById(id);
+			
+			if(account == null) {
+				log.error("ACCOUNT_NOT_FOUND");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ACCOUNT_NOT_FOUND");
+			} else {
+				Appointment app = appRepo.findByIdAndStatus(appId, 0);
+				
+				if(app == null) {
+					log.error("APPOINTMENT_NOT_FOUND");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("APPOINTMENT_NOT_FOUND");
+				} else {
+					app.setVisitDt(visitDt);
+					app.getVisitor().setName(name);
+					app.getVisitor().setIcNo(icNo);
+					app.getVisitor().setCarPlate(carPlate);
+					
+					appRepo.save(app);
+				}
+			}
+			
+			return ResponseEntity.ok("success");
+		} catch(Exception e) {
+			log.error("Failed to update schedule for appointment.", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("APPOINTMENT_UPDATE_FAILED");
+		}
+	}
+	
+	@RequestMapping(value = "/appointment/cancel/{id}/{appointmentId}", method = RequestMethod.PUT)
+	public ResponseEntity<String> cancelAppointment(@PathVariable Long id, @PathVariable Long appId) {
+		log.info("[APPOINTMENT_CANCEL] - id:{} , appointmentId:{}", id, appId);
+		try {
+			Account account = accountRepo.findById(id);
+			
+			if(account == null) {
+				log.error("ACCOUNT_NOT_FOUND");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ACCOUNT_NOT_FOUND");
+			} else {
+				Appointment app = appRepo.findByIdAndStatus(appId, 0);
+				
+				if(app == null) {
+					log.error("APPOINTMENT_NOT_FOUND");
+					return ResponseEntity.status(HttpStatus.NOT_FOUND).body("APPOINTMENT_NOT_FOUND");
+				} else {
+					app.setStatus(-1);
+					appRepo.save(app);
+				}
+			}
+			
+			return ResponseEntity.ok("success");
+		} catch(Exception e) {
+			log.error("Failed to cancel schedule for appointment.", e);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("APPOINTMENT_CANCEL_FAILED");
 		}
 	}
 }
